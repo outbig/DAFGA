@@ -1,0 +1,7 @@
+#SampleID	BarcodeSequence	LinkerPrimerSequence	ReversePrimer	Treatment	Age	Description
+#Example mapping file for the DAFGA analysis. 
+#These 3 samples are from a study of the potential of pmoA amplicon pyrosequencing for methanotroph diversity deposited in SRA(PRJEB2607).
+Io	TCAGGATC	GGNGACTGGGACTTCTGG	CCGGMGCAACGTCYTTACC	Italia	old	ERR039012_13
+Co	TCAGGTCA	GGNGACTGGGACTTCTGG	CCGGMGCAACGTCYTTACC	China	old	ERR039008_9
+Cy	TCAGAGTC	GGNGACTGGGACTTCTGG	CCGGMGCAACGTCYTTACC	China	young	ERR039004_5
+
