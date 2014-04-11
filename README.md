@@ -20,10 +20,11 @@ Dependencies
 
 INSTALL
 -------
+- DAFGA is developed and tested under linux system. The package installation and function works in linux terminal. 
 - Download DAFGA scripts from https://github.com/outbig/DAFGA. You can find a tab of "Download ZIP" on the right panel
-- unzip DAFGA-mater.zip 
-- cd v1.0 (Go to the folder of the lastest version of DAFGA scripts)
-- sudo python setup.py install
+- > unzip DAFGA-mater.zip 
+- > cd v1.0 (Go to the folder of the lastest version of DAFGA scripts)
+- > sudo python setup.py install
 
 
 QUESTIONS & BUG REPORTS
