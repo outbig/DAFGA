@@ -1,8 +1,8 @@
 ﻿TUTORIAL OF DAFGA
-- explained with pmoA dataset (included in test folder) as an example
+- explained with pmoA dataset obtained from NCBI SRA (project number: PRJEB2607) as an example
 
 Requirement:
-(1) 	refseq.gp:	retrieve reference sequences of a gene of interest from NCBI non-redundant protein database in genpeptide format (.gp).  (given here as pmoA_refseqs.gp)
+(1) 	refseq.gp:	reference sequences of a gene of interest retrieved from NCBI non-redundant protein database in genpept format (.gp).  (given here as pmoA_refseqs.gp)
 (2)	amplicon.fna:	If you have multiple libraries, make mapping file and assign samples to multiplex reads using split_libraries.py of QIIME. (given here as mapping.txt and pmoA_amplicons.fna)
 
 Workflow : 
@@ -15,20 +15,20 @@ Final outputs to be used for diversity measurments (QIIME):
 (1)	OTU_mapping.txt in otus folder
 (2)	taxa_at_rank_iden.txt or taxa_at_rank_siml.txt in taxa folder
 (3)	rep_phylo.tre in taxa folder
-First two files are converted into OTU table in biom format by make_otu_tables.py. 
-
+First two files (OTU_mapping.txt and taxa_at_rank_iden/smil.txt) are converted into OTU table in biom format by make_otu_tables.py of QIIME. 
+It is subjected to alpha- and beta- diversiy measurement of QIIME along with rep_phylo.tre.
 
 CODE DESCRIPTION
 
 [1] dafga_refDB.py
 Description: 
-DAFGA parses the publicly available sequences of functional genes that are retrieved from the NCBI protein database in genpept format. It excludes all the environmental sequences and subsequently constructs the reference database to be used for taxonomic assignment. DAFGA retrieves the full taxonomic lineage of each reference sequence from the NCBI taxon ID, and fetches near full-length 16S rRNA gene sequences (1200-1600 bp in length) of the source organisms from the NCBI nucleotide database, but only from those organisms that were described at strain level. 
+DAFGA parses the publicly available sequences of functional genes that are retrieved from the NCBI protein database in genpept format. It excludes all the environmental sequences that are not taxonomically affiliated and subsequently constructs the reference database to be used for taxonomic assignment (saved as "*_ref_seqs.fasta"). DAFGA retrieves the full taxonomic lineage of each reference sequence from the NCBI taxon ID (saved as "*_ID_to_taxonomy.txt"). In addition, it separately collect reference sequences that are described at strain level (saved as "*_strain.fasta") and fetches near full-length 16S rRNA gene sequences (1200-1600 bp in length) of the source organisms from the NCBI nucleotide database (saved as *_strain_16S_rRNAs.fasta").
 
-*Note:  Internet connection is required to execute
+*Note:  Internet connection is required to execute this command.
 
 [REQUIRED]
--gb		Reference sequences of a functional gene that are retrieved from NCBI protein database in a .gp format 
---email 	Email address necessary to use the Entrez Utilities Web Service 
+-gb		Reference sequences of a functional gene that are retrieved from NCBI protein database in *.gp format 
+--email 	Email address required to use the Entrez Utilities Web Service 
 -o		Folder where output files will be saved
 
 [OPTIONAL]
@@ -44,7 +44,7 @@ processed.gp		The processed.gp doesn’t  include unrecognizable lines by biopyt
 
 [2] dafga_correlation.py
 Description:
-The pairs of functional and 16S rRNA gene sequences are used to compute the ER of the functional gene in relation to that of its 16S rRNA gene by pairwise alignment between all the strain level source organisms using the EMBOSS Smith-Waterman alignment tool. Taxonomic ranks are determined based on the similarity threshold of 16S rRNA gene sequences (phylum: 80%, class: 85%, order: 90%, family: 93%, genus: 95%, species: 97%, and strain: 99%)   
+The pairs of functional and 16S rRNA gene sequences ("*_strain.fasta" and "*_strain_16S_rRNAs.fasta") are used to compute the evolutionary rate(ER) of a functional gene in relation to that of its 16S rRNA gene by pairwise alignment between all the strain level source organisms using the EMBOSS Smith-Waterman alignment tool(fg_split and ssu_split). Outputs of pairwise alignments are plotted on scatter plot comparing functional and 16S rRNA gene sequence divergence between source organisms (correlation_plot.pdf). Taxonomic thresholds of a functional gene are deduced from linear regression analysis of those of 16S rRNA gene sequences correspoing to different taxonomic ranks (phylum: 80%, class: 85%, order: 90%, family: 93%, genus: 95%, species: 97%, and strain: 99%), resulting in "corresponding_similarity_to_16S.txt".   
 
 [REQUIRED]
 -r	The output directory of dafga_refDB.py that contains 16S rRNA and functional gene sequences of source organsms (*strain_16S_rRNA.fasta and *strain.fasta) 
@@ -59,7 +59,7 @@ corresponding_similarity_to_16S.txt	Similarity thresholds of a functional gene c
 
 [3] dafga_otus.py
 Description:
-Insertion and deletion errors in next-generation sequencing can often cause a shift in reading frame during translation, thereby inflating diversity of functional gene species. To overcome this problem and to reduce overestimation of diversity, DAFGA uses a two-step procedure for OTU clustering. Amplicon reads, which passed user-defined quality-filtering strategy, are pre-clustered into OTUs defined by high nucleotide sequence identity (defalult >97%), using USEARCH (Edgar, 2010). A consensus sequence of each OTU is selected to represent this pre-clustered OTU. The translated consensus sequences are subjected to final OTU clustering using the gene-dependent sequence identity threshold that corresponds to the desired taxonomic rank. Centroid sequences are selected to represent each final OTU and used for both taxonomic assignment and phylogenetic tree construction. The OTU mapping file is generated by merging pre-clustering and clustering output.
+Insertion and deletion errors in next-generation sequencing can often cause a shift in reading frame during translation, thereby inflating diversity of functional gene species. To overcome this problem and to reduce overestimation of diversity, DAFGA uses a two-step procedure for OTU clustering. Amplicon reads, which passed user-defined quality-filtering strategy, are pre-clustered into OTUs defined by high nucleotide sequence identity (option: --nt_id, defalult >97%), using USEARCH (Edgar, 2010). A consensus sequence of each OTU is selected to represent pre-clustered OTUs (saved in folder "preclustering"). The translated consensus sequences are subjected to final OTU clustering using the gene-dependent sequence identity threshold that corresponds to the desired taxonomic rank (user can define with --taxa option). Centroid sequences are selected to represent each final OTU and used for both taxonomic assignment and phylogenetic tree construction. The OTU mapping file is generated by merging pre-clustering and clustering output.
 
 [REQUIRED]
 -i	Amplicon sequences resulting from split_library.py (QIIME)
@@ -83,10 +83,12 @@ rep_seqs.fasta	Translated representative sequences of OTUs
 Description: 
 The number of functional gene sequences that are available for the construction of reference databases is limited and biased towards taxa characterized by sequenced genomes. For instance, dependent on the functional marker gene, the number of known sequences deposited in FunGene ranges from 100 to maximum 77,876 (including environmental sequences), while more than three million 16S rRNA sequences are available. In similarity-based taxonomic classification of functional gene sequences, lack of close homologs at low taxonomic ranks, such as genus or species, can often lead to incorrect classification due to high sequence divergence. Therefore, DAFGA takes into account the absolute identity or similarity score in alignment with the best homolog, and performs assignment at the most reliable taxonomic rank by referring to the correlation plot between the functional and 16S rRNA gene sequences.
 
+This script takes "*_ref_seqs.fasta" as an input to construct BLAST database and compare "rep_seqs.fasta" to find the most homologous sequences in the database. It generates sequence alignment profiles of the representative sequences, containing histograms of query coverage and idenity/similarity in alignments (align_prof.pdf). Users can filter poor quality alignment with respect to alignment length of query sequences using --cov option, and they can also specify the lowest taxonomic level of assignment based on idenity/similarity value in alignments (option: --taxa) by referring taxonomic threshold given in "corresponding_similarity_to_16S.txt". Taxonomic assignment and phylogenetic tree of the representative sequences are respectively saved as "*_taxa_assignment.txt" and constructed as rep_phylo.tre using FastTree method.   
+
 [REQUIRED]
--g	The output directory of the OTU_clustering.py containing 
--r	The output directory of  the reference_db.py containing
--c	The output directory of the correlation_plot.py containing 
+-g	The output directory of the OTU_clustering.py containing "*_ref_seqs.fasta"
+-r	The output directory of  the reference_db.py containing "rep_seqs.fasta"
+-c	The output directory of the correlation_plot.py containing "corresponding_similarity_to_16S.txt"
 -o	The output directory where the output files will be saved
 
 [OPTIONAL]
