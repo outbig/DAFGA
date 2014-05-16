@@ -3,7 +3,7 @@ DAFGA
 
 Diversity analysis of Functional Gene Amplicons
 
-Diversity analysis of functional marker genes provides physiological insights into microbial guilds that perform an ecologically relevant process. However, it is challenging to group functional gene sequences to valid taxonomic units, primarily due to varying evolutionary rates of the individual gene sequences and possible horizontal gene transfer events. We developed a python script package named DAFGA, which estimates the evolutionary rate of a particular functional gene in a standardized manner by relating its sequence divergence to that of the 16S rRNA gene. As a result, DAFGA provides gene-specific parameter sets for OTU clustering and taxonomic assignment at desired rank, and it can be implemented into the diversity measurements offered by QIIME.
+Diversity analysis of functional marker genes provides physiological insights into microbial guilds that perform an ecologically relevant process. However, it is challenging to group functional gene sequences to valid taxonomic units, primarily due to varying evolutionary rates of the individual gene sequences and possible horizontal gene transfer events. We developed a python script package named DAFGA, which estimates the evolutionary rate of a particular functional gene in a standardized manner by relating its sequence divergence to that of the 16S rRNA gene. As a result, DAFGA provides gene-specific parameter sets for OTU clustering and taxonomic assignment at desired rank, and it can be implemented into the diversity measurements offered by QIIME or Mothur.
 
 
 Dependencies
@@ -21,10 +21,11 @@ Dependencies
 INSTALL
 -------
 - DAFGA is developed and tested under linux system. The package installation and function works in linux terminal. 
-- Download DAFGA scripts from https://github.com/outbig/DAFGA. You can find a tab of "Download ZIP" on the right panel
-- > unzip DAFGA-mater.zip 
-- > cd v1.0 (Go to the folder of the lastest version of DAFGA scripts)
-- > sudo python setup.py install
+- Download DAFGA scripts from https://github.com/outbig/DAFGA. You can find a tab of "Download ZIP" on the right panel. 
+- Type commands below in terminal subsequently.
+  > unzip DAFGA-mater.zip 
+  > cd v1.0 (Go to the folder of the lastest version of DAFGA scripts)
+  > sudo python setup.py install
 
 
 QUESTIONS & BUG REPORTS
