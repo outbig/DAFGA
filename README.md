@@ -18,8 +18,8 @@ Dependencies
 - Muscle:	Multiple sequence alignment software for protein sequences (Download from http://www.drive5.com/muscle/downloads.htm)
 - BLAST+:	A new suite of BLAST tools that utilizes the NCBI C++ Toolkit (Download from  ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) 
 
-INSTALL
--------
+INSTALLATION
+------------
 - DAFGA is developed and tested under linux system. The package installation and function works in linux terminal. 
 - Download DAFGA scripts from https://github.com/outbig/DAFGA. You can find a tab of "Download ZIP" on the right panel. 
 - Type commands below in terminal subsequently.
